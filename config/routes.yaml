@@ -7,3 +7,8 @@ BackendBundle:
   resource: "@BackendBundle/Controller/"
   type: annotation
   prefix: /api
+
+FrontEndBundle:
+  resource: "@FrontEndBundle/Controller/"
+  type: annotation
+  prefix: /

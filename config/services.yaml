@@ -27,3 +27,4 @@ services:
 
 imports:
     - resource: '@BackendBundle/Resources/config/services.yml'
+    - resource: '@FrontEndBundle/Resources/config/services.yml'

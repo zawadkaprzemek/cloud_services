@@ -14,4 +14,5 @@ return [
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
     App\BackendBundle\BackendBundle::class => ['all' => true],
+    App\FrontEndBundle\FrontEndBundle::class => ['all' => true],
 ];
