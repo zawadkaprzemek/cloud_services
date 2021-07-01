@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Formularz produktu{% endblock %}
+
+{% block body %}
+
+
+    <form id="productForm">
+        <div class="form-group">
+            <label for="productName">Nazwa produktu</label>
+            <input type="text" class="form-control" id="productName" required>
+        </div>
+        <div class="form-group">
+            <label for="productAmount">Ilość</label>
+            <input type="number" min="0" class="form-control" id="productAmount" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+{% endblock %}
+
+
+{% block endstripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+    $(document).ready(function (){
+        {% if id>0 %}
+        $.ajax({
+            url: '/api/product/{{ id }}/details',
+            type: 'GET',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer {{ api_token }}');
+            },
+            data: {},
+            success: function (result) {
+                $('#productName').val(result.name);
+                $('#productAmount').val(result.amount);
+            },
+            error: function (result,error) {
+                $('#productForm').hide();
+                addAlert('Brak produktu','danger');
+            },
+        });
+        {% endif %}
+        $('#productForm').on('submit', function(event){
+            event.preventDefault();
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+            let name=$('#productName').val();
+            let amount=$('#productAmount').val();
+
+            let url='{% if id==0 %}/new{% else %}/{{ id }}/edit{% endif %}';
+            let method='{% if id==0 %}POST{% else %}PUT{% endif %}';
+
+
+            $.ajax({
+                url: '/api/product'+url,
+                type: method,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer {{ api_token }}');
+                },
+                data: JSON.stringify({ "name": name, "amount":amount }),
+                success: function (result,textStatus, xhr) {
+                    let message;
+                    if(xhr.status===201)
+                    {
+                        message='Dodano nowy produkt';
+                    }else{
+                        message='Edycja zakończona powodzeniem';
+                    }
+                    addAlert(message,'success')
+                },
+                error: function (result) {
+                    addAlert('Wystąpił błąd','danger');
+                    let errorObj=JSON.parse(result.responseText);
+                    addError(errorObj.errors)
+                },
+            })
+        })
+
+        function addError(errors)
+        {
+            if(typeof errors.amount !=='undefined')
+            {
+                let info='<div class="invalid-feedback">'+errors.amount[0]+'</div>';
+                $('#productAmount').addClass('is-invalid').after(info);
+            }
+            if(typeof errors.name !=='undefined')
+            {
+                let info='<div class="invalid-feedback">'+errors.name[0]+'</div>';
+                $('#productName').addClass('is-invalid').after(info);
+            }
+        }
+    });
+    </script>
+{% endblock %}

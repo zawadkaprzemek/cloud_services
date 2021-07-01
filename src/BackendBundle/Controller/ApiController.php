@@ -78,7 +78,7 @@ class ApiController extends AbstractController
 
     /**
      * @param int $id
-     * @Route("/products/{id}/details", name="api_product_details", methods={"GET"}, requirements={"id":"\d+"})
+     * @Route("/product/{id}/details", name="api_product_details", methods={"GET"}, requirements={"id":"\d+"})
      * @return JsonResponse
      */
     public function itemAction(int $id): JsonResponse
@@ -93,7 +93,7 @@ class ApiController extends AbstractController
 
     /**
      * @param int $id
-     * @Route("/products/{id}/delete", name="api_product_delete", methods={"DELETE"}), requirements={"id":"\d+"})
+     * @Route("/product/{id}/delete", name="api_product_delete", methods={"DELETE"}), requirements={"id":"\d+"})
      * @return JsonResponse
      */
     public function deleteAction(int $id): JsonResponse

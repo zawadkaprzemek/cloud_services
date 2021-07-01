@@ -1,20 +1,79 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Cloud Services{% endblock %}
+{% block title %}Lista produktów{% endblock %}
 
 {% block body %}
-    <style>
-        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-    </style>
-
-    <div class="example-wrapper">
 
 
-        This friendly message is coming from:
-        <ul>
-            <li>Your controller at <code><a href="{{ '/home/przemek/Dokumenty/b3_cloud/b3_cloud/src/Controller/ApiController.php'|file_link(0) }}">src/Controller/ApiController.php</a></code></li>
-            <li>Your template at <code><a href="{{ '/home/przemek/Dokumenty/b3_cloud/b3_cloud/templates/api/index.html.twig'|file_link(0) }}">templates/api/index.html.twig</a></code></li>
-        </ul>
-    </div>
+    <table id="productsTable" class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nazwa</th>
+            <th>Ilość</th>
+            <th>Akcje</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+
+{% block endstripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+    $(document).ready(function (){
+        $.ajax({
+            url: '/api/products/{{ filter }}',
+            type: 'GET',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer {{ api_token }}');
+            },
+            data: {},
+            success: function (result) {
+                printProducts(result.products)
+            },
+            error: function () { },
+        });
+    });
+
+    function printProducts(products) {
+        let html='';
+        if(products.length > 0) {
+            $(products).each(function () {
+                html += '<tr id="product_'+this.id+'"><td>' + this.id + '</td><td>' + this.name + '</td><td>' + this.amount + '</td><td>';
+                html += '<div class="btn-group btn-group-sm"><a href="/product/'+this.id+'/edit" class="btn btn-primary">Edytuj</a>'
+                html += '<button data-id="'+this.id+'" class="btn btn-danger btn-delete">Usuń</button></div>'
+                html += '</td></tr>'
+            })
+        }else{
+            html='<tr><td colspan="4">Lista produktów jest pusta</td></tr>';
+        }
+
+        $('#productsTable tbody').html(html);
+    }
+
+    $("#productsTable").on('click','.btn-delete',function (){
+        if(confirm('Na pewno chcesz usunąć ten produkt?'))
+        {
+            let id=$(this).data('id');
+            $.ajax({
+                url: '/api/product/'+id+'/delete',
+                type: 'DELETE',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer {{ api_token }}');
+                },
+                data: {},
+                success: function (result) {
+                    $('#product_'+id).remove();
+                    addAlert('Usunięto produkt','success')
+                },
+                error: function () { },
+            });
+        }
+    });
+    </script>
 {% endblock %}

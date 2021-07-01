@@ -1,0 +1,12 @@
+<header class="mb-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="btn-group">
+                <a href="{{ path('app_home') }}" class="btn btn-outline-primary">Wszystkie</a>
+                <a href="{{ path('app_home',{filter:'more_than_5'}) }}" class="btn btn-outline-primary">Powyżej 5</a>
+                <a href="{{ path('app_home',{filter:'out_of_stock'}) }}" class="btn btn-outline-primary">Brak na stanie</a>
+                <a href="{{ path('app_product_new') }}" class="btn btn-success">Dodaj nowy</a>
+            </div>
+        </div>
+    </div>
+</header>

@@ -5,6 +5,7 @@ namespace App\BackendBundle\Entity;
 use App\BackendBundle\Repository\ItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ItemRepository::class)
@@ -22,12 +23,22 @@ class Item
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"api"})
+     * @Assert\Length(
+     *      min = 6,
+     *      max = 50,
+     *      minMessage = "Nazwa produktu musi mieć conajmniej {{ limit }} znaków",
+     *      maxMessage = "Nazwa produktu może mieć maksymalnie {{ limit }} znaków"
+     * )
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups({"api"})
+     * @Assert\Range(
+     *     min=0,
+     *     notInRangeMessage = "Wartość musi być większa równa {{min}}",
+     * )
      */
     private $amount;
 
